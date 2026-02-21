@@ -361,6 +361,39 @@ enum GpioAction
     MODE_WHEEL_PEDAL_GAS         = 128;
     MODE_WHEEL_PEDAL_BRAKE       = 129;
     MODE_WHEEL_PEDAL_CLUTCH      = 130;
+
+    VPIN_00                      = 1000;
+    VPIN_01                      = 1001;
+    VPIN_02                      = 1002;
+    VPIN_03                      = 1003;
+    VPIN_04                      = 1004;
+    VPIN_05                      = 1005;
+    VPIN_06                      = 1006;
+    VPIN_07                      = 1007;
+    VPIN_08                      = 1008;
+    VPIN_09                      = 1009;
+    VPIN_10                      = 1010;
+    VPIN_11                      = 1011;
+    VPIN_12                      = 1012;
+    VPIN_13                      = 1013;
+    VPIN_14                      = 1014;
+    VPIN_15                      = 1015;
+    VPIN_16                      = 1016;
+    VPIN_17                      = 1017;
+    VPIN_18                      = 1018;
+    VPIN_19                      = 1019;
+    VPIN_20                      = 1020;
+    VPIN_21                      = 1021;
+    VPIN_22                      = 1022;
+    VPIN_23                      = 1023;
+    VPIN_24                      = 1024;
+    VPIN_25                      = 1025;
+    VPIN_26                      = 1026;
+    VPIN_27                      = 1027;
+    VPIN_28                      = 1028;
+    VPIN_29                      = 1029;
+    VPIN_30                      = 1030;
+    VPIN_31                      = 1031;
 }
 
 enum GpioDirection

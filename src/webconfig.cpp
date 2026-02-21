@@ -49,6 +49,19 @@ static string http_post_uri;
 static char http_post_payload[LWIP_HTTPD_POST_MAX_PAYLOAD_LEN];
 static uint16_t http_post_payload_len = 0;
 
+static const char* const pinNames[30] = {
+    "pin00", "pin01", "pin02", "pin03", "pin04", "pin05", "pin06", "pin07", "pin08", "pin09",
+    "pin10", "pin11", "pin12", "pin13", "pin14", "pin15", "pin16", "pin17", "pin18", "pin19",
+    "pin20", "pin21", "pin22", "pin23", "pin24", "pin25", "pin26", "pin27", "pin28", "pin29"
+};
+
+static const char* const vpinNames[33] = {
+    "vpin00", "vpin01", "vpin02", "vpin03", "vpin04", "vpin05", "vpin06", "vpin07",
+    "vpin08", "vpin09", "vpin10", "vpin11", "vpin12", "vpin13", "vpin14", "vpin15",
+    "vpin16", "vpin17", "vpin18", "vpin19", "vpin20", "vpin21", "vpin22", "vpin23",
+    "vpin24", "vpin25", "vpin26", "vpin27", "vpin28", "vpin29", "vpin30", "vpin31",
+};
+
 // Don't inline this function, we do not want to consume stack space in the calling function
 template <typename T, typename K>
 static void __attribute__((noinline)) readDoc(T& var, const DynamicJsonDocument& doc, const K& key)
@@ -557,7 +570,7 @@ std::string setProfileOptions()
     JsonObject options = doc.as<JsonObject>();
     JsonArray alts = options["alternativePinMappings"];
     int altsIndex = 0;
-    char pinName[6];
+    char pinName[8];
     for (JsonObject alt : alts) {
         for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
             snprintf(pinName, 6, "pin%0*d", 2, pin);
@@ -578,6 +591,17 @@ std::string setProfileOptions()
             }
         }
         profileOptions.gpioMappingsSets[altsIndex].pins_count = NUM_BANK0_GPIOS;
+        profileOptions.gpioMappingsSets[altsIndex].vpins_count = VPIN_COUNT;
+
+        // Virtual pins
+        for (int vpin = 0; vpin < 32; vpin++) {
+            snprintf(pinName, sizeof(pinName), "vpin%02d", vpin);
+            if (alt.containsKey(pinName)) {
+                profileOptions.gpioMappingsSets[altsIndex].vpins[vpin].action = (GpioAction)alt[pinName]["action"];
+                profileOptions.gpioMappingsSets[altsIndex].vpins[vpin].customButtonMask = (uint32_t)alt[pinName]["customButtonMask"];
+                profileOptions.gpioMappingsSets[altsIndex].vpins[vpin].customDpadMask = (uint32_t)alt[pinName]["customDpadMask"];
+            }
+        }
 
         size_t profileLabelSize = sizeof(profileOptions.gpioMappingsSets[altsIndex].profileLabel);
         strncpy(profileOptions.gpioMappingsSets[altsIndex].profileLabel, alt["profileLabel"], profileLabelSize - 1);
@@ -594,7 +618,7 @@ std::string setProfileOptions()
 
 std::string getProfileOptions()
 {
-    const size_t capacity = JSON_OBJECT_SIZE(500);
+    const size_t capacity = JSON_OBJECT_SIZE(1000);
     DynamicJsonDocument doc(capacity);
 
     const auto writePinDoc = [&](const int item, const char* key, const GpioMappingInfo& value) -> void
@@ -612,45 +636,22 @@ std::string getProfileOptions()
     }
 
     for (int i = 0; i < profileOptions.gpioMappingsSets_count; i++) {
-        // this looks duplicative, but something in arduinojson treats the doc
-        // field string by reference so you can't be "clever" and do an snprintf
-        // thing or else you only send the last field in the JSON
-        writePinDoc(i, "pin00", profileOptions.gpioMappingsSets[i].pins[0]);
-        writePinDoc(i, "pin01", profileOptions.gpioMappingsSets[i].pins[1]);
-        writePinDoc(i, "pin02", profileOptions.gpioMappingsSets[i].pins[2]);
-        writePinDoc(i, "pin03", profileOptions.gpioMappingsSets[i].pins[3]);
-        writePinDoc(i, "pin04", profileOptions.gpioMappingsSets[i].pins[4]);
-        writePinDoc(i, "pin05", profileOptions.gpioMappingsSets[i].pins[5]);
-        writePinDoc(i, "pin06", profileOptions.gpioMappingsSets[i].pins[6]);
-        writePinDoc(i, "pin07", profileOptions.gpioMappingsSets[i].pins[7]);
-        writePinDoc(i, "pin08", profileOptions.gpioMappingsSets[i].pins[8]);
-        writePinDoc(i, "pin09", profileOptions.gpioMappingsSets[i].pins[9]);
-        writePinDoc(i, "pin10", profileOptions.gpioMappingsSets[i].pins[10]);
-        writePinDoc(i, "pin11", profileOptions.gpioMappingsSets[i].pins[11]);
-        writePinDoc(i, "pin12", profileOptions.gpioMappingsSets[i].pins[12]);
-        writePinDoc(i, "pin13", profileOptions.gpioMappingsSets[i].pins[13]);
-        writePinDoc(i, "pin14", profileOptions.gpioMappingsSets[i].pins[14]);
-        writePinDoc(i, "pin15", profileOptions.gpioMappingsSets[i].pins[15]);
-        writePinDoc(i, "pin16", profileOptions.gpioMappingsSets[i].pins[16]);
-        writePinDoc(i, "pin17", profileOptions.gpioMappingsSets[i].pins[17]);
-        writePinDoc(i, "pin18", profileOptions.gpioMappingsSets[i].pins[18]);
-        writePinDoc(i, "pin19", profileOptions.gpioMappingsSets[i].pins[19]);
-        writePinDoc(i, "pin20", profileOptions.gpioMappingsSets[i].pins[20]);
-        writePinDoc(i, "pin21", profileOptions.gpioMappingsSets[i].pins[21]);
-        writePinDoc(i, "pin22", profileOptions.gpioMappingsSets[i].pins[22]);
-        writePinDoc(i, "pin23", profileOptions.gpioMappingsSets[i].pins[23]);
-        writePinDoc(i, "pin24", profileOptions.gpioMappingsSets[i].pins[24]);
-        writePinDoc(i, "pin25", profileOptions.gpioMappingsSets[i].pins[25]);
-        writePinDoc(i, "pin26", profileOptions.gpioMappingsSets[i].pins[26]);
-        writePinDoc(i, "pin27", profileOptions.gpioMappingsSets[i].pins[27]);
-        writePinDoc(i, "pin28", profileOptions.gpioMappingsSets[i].pins[28]);
-        writePinDoc(i, "pin29", profileOptions.gpioMappingsSets[i].pins[29]);
+        // Use static arrays to provide stable string addresses for ArduinoJSON references and reduce stack usage?
+        for (int pinIndex = 0; pinIndex < 30; pinIndex++) {
+            writePinDoc(i, pinNames[pinIndex], profileOptions.gpioMappingsSets[i].pins[pinIndex]);
+        }
+        
+        for (int vpinIndex = 0; vpinIndex < 32; vpinIndex++) {
+            writePinDoc(i, vpinNames[vpinIndex], profileOptions.gpioMappingsSets[i].vpins[vpinIndex]);
+        }
+
         writeDoc(doc, "alternativePinMappings", i, "profileLabel", profileOptions.gpioMappingsSets[i].profileLabel);
         doc["alternativePinMappings"][i]["enabled"] = profileOptions.gpioMappingsSets[i].enabled;
     }
 
     return serialize_json(doc);
 }
+
 
 std::string setGamepadOptions()
 {
@@ -1115,82 +1116,155 @@ std::string getCustomTheme()
 std::string setPinMappings()
 {
     DynamicJsonDocument doc = get_post_data();
-
     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
 
-    char pinName[6];
-    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
-        snprintf(pinName, 6, "pin%0*d", 2, pin);
-        // setting a pin shouldn't change a new existing addon/reserved pin
-        if (gpioMappings.pins[pin].action != GpioAction::RESERVED &&
-                gpioMappings.pins[pin].action != GpioAction::ASSIGNED_TO_ADDON &&
-                (GpioAction)doc[pinName]["action"] != GpioAction::RESERVED &&
-                (GpioAction)doc[pinName]["action"] != GpioAction::ASSIGNED_TO_ADDON) {
-            gpioMappings.pins[pin].action = (GpioAction)doc[pinName]["action"];
-            gpioMappings.pins[pin].customButtonMask = (uint32_t)doc[pinName]["customButtonMask"];
-            gpioMappings.pins[pin].customDpadMask = (uint32_t)doc[pinName]["customDpadMask"];
+    // 1. Physical Pins
+    for (int i = 0; i < 30; i++) {
+        const char* key = pinNames[i];
+        if (!doc.containsKey(key)) continue;
+
+        if (gpioMappings.pins[i].action != GpioAction::RESERVED &&
+            gpioMappings.pins[i].action != GpioAction::ASSIGNED_TO_ADDON &&
+            (GpioAction)doc[key]["action"] != GpioAction::RESERVED &&
+            (GpioAction)doc[key]["action"] != GpioAction::ASSIGNED_TO_ADDON) {
+            
+            gpioMappings.pins[i].action = (GpioAction)doc[key]["action"];
+            gpioMappings.pins[i].customButtonMask = (uint32_t)doc[key]["customButtonMask"];
+            gpioMappings.pins[i].customDpadMask = (uint32_t)doc[key]["customDpadMask"];
         }
     }
-    size_t profileLabelSize = sizeof(gpioMappings.profileLabel);
-    strncpy(gpioMappings.profileLabel, doc["profileLabel"], profileLabelSize - 1);
-    gpioMappings.profileLabel[profileLabelSize - 1] = '\0';
+
+    // 2. Virtual Pins
+    for (int i = 0; i < VPIN_COUNT; i++) {
+        const char* key = vpinNames[i];
+        if (doc.containsKey(key)) {
+            gpioMappings.vpins[i].action = (GpioAction)doc[key]["action"];
+            gpioMappings.vpins[i].customButtonMask = (uint32_t)doc[key]["customButtonMask"];
+            gpioMappings.vpins[i].customDpadMask = (uint32_t)doc[key]["customDpadMask"];
+        }
+    }
+
+    // 3. Metadata
+    if (doc.containsKey("profileLabel")) {
+        size_t labelSize = sizeof(gpioMappings.profileLabel);
+        strncpy(gpioMappings.profileLabel, doc["profileLabel"], labelSize - 1);
+        gpioMappings.profileLabel[labelSize - 1] = '\0';
+    }
     gpioMappings.enabled = doc["enabled"];
 
     EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true));
 
-    return serialize_json(doc);
+    // return serialize_json(doc);
+    return "{\"success\":true}"; // Large serialized doc causing malformed JSON to be returned. Shows error in UI even though it saves correctly. TODO: Investigate serializing issue.
 }
+
+// std::string setPinMappings()
+// {
+//     DynamicJsonDocument doc = get_post_data();
+
+//     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
+
+//     char pinName[6];
+//     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+//         snprintf(pinName, 6, "pin%0*d", 2, pin);
+//         // setting a pin shouldn't change a new existing addon/reserved pin
+//         if (gpioMappings.pins[pin].action != GpioAction::RESERVED &&
+//                 gpioMappings.pins[pin].action != GpioAction::ASSIGNED_TO_ADDON &&
+//                 (GpioAction)doc[pinName]["action"] != GpioAction::RESERVED &&
+//                 (GpioAction)doc[pinName]["action"] != GpioAction::ASSIGNED_TO_ADDON) {
+//             gpioMappings.pins[pin].action = (GpioAction)doc[pinName]["action"];
+//             gpioMappings.pins[pin].customButtonMask = (uint32_t)doc[pinName]["customButtonMask"];
+//             gpioMappings.pins[pin].customDpadMask = (uint32_t)doc[pinName]["customDpadMask"];
+//         }
+//     }
+//     size_t profileLabelSize = sizeof(gpioMappings.profileLabel);
+//     strncpy(gpioMappings.profileLabel, doc["profileLabel"], profileLabelSize - 1);
+//     gpioMappings.profileLabel[profileLabelSize - 1] = '\0';
+//     gpioMappings.enabled = doc["enabled"];
+
+//     EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true));
+
+//     return serialize_json(doc);
+// }
 
 std::string getPinMappings()
 {
-    const size_t capacity = JSON_OBJECT_SIZE(500);
+    const size_t capacity = JSON_OBJECT_SIZE(2000); 
     DynamicJsonDocument doc(capacity);
 
     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
 
-    const auto writePinDoc = [&](const char* key, const GpioMappingInfo& value) -> void
+    const auto writePinDocHelper = [&](const char* key, const GpioMappingInfo& value) -> void
     {
         writeDoc(doc, key, "action", value.action);
         writeDoc(doc, key, "customButtonMask", value.customButtonMask);
         writeDoc(doc, key, "customDpadMask", value.customDpadMask);
     };
 
-    writePinDoc("pin00", gpioMappings.pins[0]);
-    writePinDoc("pin01", gpioMappings.pins[1]);
-    writePinDoc("pin02", gpioMappings.pins[2]);
-    writePinDoc("pin03", gpioMappings.pins[3]);
-    writePinDoc("pin04", gpioMappings.pins[4]);
-    writePinDoc("pin05", gpioMappings.pins[5]);
-    writePinDoc("pin06", gpioMappings.pins[6]);
-    writePinDoc("pin07", gpioMappings.pins[7]);
-    writePinDoc("pin08", gpioMappings.pins[8]);
-    writePinDoc("pin09", gpioMappings.pins[9]);
-    writePinDoc("pin10", gpioMappings.pins[10]);
-    writePinDoc("pin11", gpioMappings.pins[11]);
-    writePinDoc("pin12", gpioMappings.pins[12]);
-    writePinDoc("pin13", gpioMappings.pins[13]);
-    writePinDoc("pin14", gpioMappings.pins[14]);
-    writePinDoc("pin15", gpioMappings.pins[15]);
-    writePinDoc("pin16", gpioMappings.pins[16]);
-    writePinDoc("pin17", gpioMappings.pins[17]);
-    writePinDoc("pin18", gpioMappings.pins[18]);
-    writePinDoc("pin19", gpioMappings.pins[19]);
-    writePinDoc("pin20", gpioMappings.pins[20]);
-    writePinDoc("pin21", gpioMappings.pins[21]);
-    writePinDoc("pin22", gpioMappings.pins[22]);
-    writePinDoc("pin23", gpioMappings.pins[23]);
-    writePinDoc("pin24", gpioMappings.pins[24]);
-    writePinDoc("pin25", gpioMappings.pins[25]);
-    writePinDoc("pin26", gpioMappings.pins[26]);
-    writePinDoc("pin27", gpioMappings.pins[27]);
-    writePinDoc("pin28", gpioMappings.pins[28]);
-    writePinDoc("pin29", gpioMappings.pins[29]);
+    for (int i = 0; i < 30; i++) {
+        writePinDocHelper(pinNames[i], gpioMappings.pins[i]);
+    }
+
+    for (int i = 0; i < 32; i++) {
+        writePinDocHelper(vpinNames[i], gpioMappings.vpins[i]);
+    }
 
     writeDoc(doc, "profileLabel", gpioMappings.profileLabel);
     doc["enabled"] = gpioMappings.enabled;
 
     return serialize_json(doc);
 }
+
+// std::string getPinMappings()
+// {
+//     const size_t capacity = JSON_OBJECT_SIZE(500);
+//     DynamicJsonDocument doc(capacity);
+
+//     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
+
+//     const auto writePinDoc = [&](const char* key, const GpioMappingInfo& value) -> void
+//     {
+//         writeDoc(doc, key, "action", value.action);
+//         writeDoc(doc, key, "customButtonMask", value.customButtonMask);
+//         writeDoc(doc, key, "customDpadMask", value.customDpadMask);
+//     };
+
+//     writePinDoc("pin00", gpioMappings.pins[0]);
+//     writePinDoc("pin01", gpioMappings.pins[1]);
+//     writePinDoc("pin02", gpioMappings.pins[2]);
+//     writePinDoc("pin03", gpioMappings.pins[3]);
+//     writePinDoc("pin04", gpioMappings.pins[4]);
+//     writePinDoc("pin05", gpioMappings.pins[5]);
+//     writePinDoc("pin06", gpioMappings.pins[6]);
+//     writePinDoc("pin07", gpioMappings.pins[7]);
+//     writePinDoc("pin08", gpioMappings.pins[8]);
+//     writePinDoc("pin09", gpioMappings.pins[9]);
+//     writePinDoc("pin10", gpioMappings.pins[10]);
+//     writePinDoc("pin11", gpioMappings.pins[11]);
+//     writePinDoc("pin12", gpioMappings.pins[12]);
+//     writePinDoc("pin13", gpioMappings.pins[13]);
+//     writePinDoc("pin14", gpioMappings.pins[14]);
+//     writePinDoc("pin15", gpioMappings.pins[15]);
+//     writePinDoc("pin16", gpioMappings.pins[16]);
+//     writePinDoc("pin17", gpioMappings.pins[17]);
+//     writePinDoc("pin18", gpioMappings.pins[18]);
+//     writePinDoc("pin19", gpioMappings.pins[19]);
+//     writePinDoc("pin20", gpioMappings.pins[20]);
+//     writePinDoc("pin21", gpioMappings.pins[21]);
+//     writePinDoc("pin22", gpioMappings.pins[22]);
+//     writePinDoc("pin23", gpioMappings.pins[23]);
+//     writePinDoc("pin24", gpioMappings.pins[24]);
+//     writePinDoc("pin25", gpioMappings.pins[25]);
+//     writePinDoc("pin26", gpioMappings.pins[26]);
+//     writePinDoc("pin27", gpioMappings.pins[27]);
+//     writePinDoc("pin28", gpioMappings.pins[28]);
+//     writePinDoc("pin29", gpioMappings.pins[29]);
+
+//     writeDoc(doc, "profileLabel", gpioMappings.profileLabel);
+//     doc["enabled"] = gpioMappings.enabled;
+
+//     return serialize_json(doc);
+// }
 
 std::string setKeyMappings()
 {

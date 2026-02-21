@@ -44,6 +44,7 @@ public:
 	AnimationOptions& getAnimationOptions() { return config.animationOptions; }
 	ProfileOptions& getProfileOptions() { return config.profileOptions; }
 	GpioMappingInfo* getProfilePinMappings() { return functionalPinMappings; }
+	GpioMappingInfo* getProfileVirtualPinMappings() { return virtualPinMappings; }
 	PeripheralOptions& getPeripheralOptions() { return config.peripheralOptions; }
 
 	void init();
@@ -60,6 +61,7 @@ public:
 	void nextProfile();
 	void previousProfile();
 	void setFunctionalPinMappings();
+	void setVirtualPinMappings();
 	char* currentProfileLabel();
 
 	void ResetSettings(); 				// EEPROM Reset Feature
@@ -74,6 +76,7 @@ private:
 	uint8_t featureData[32]; // USB X-Input Feature Data
 	Config config;
 	GpioMappingInfo functionalPinMappings[NUM_BANK0_GPIOS];
+	GpioMappingInfo virtualPinMappings[32];
 	uint32_t systemFlashSize;
 };
 

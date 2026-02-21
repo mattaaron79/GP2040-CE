@@ -134,6 +134,28 @@ void Storage::setFunctionalPinMappings()
 	}
 }
 
+void Storage::setVirtualPinMappings()
+{
+	GpioMappingInfo* alts = nullptr;
+	if (config.gamepadOptions.profileNumber >= 2 &&
+			config.gamepadOptions.profileNumber <= config.profileOptions.gpioMappingsSets_count + 1) {
+		if (config.profileOptions.gpioMappingsSets[config.gamepadOptions.profileNumber-2].enabled) {
+			alts = config.profileOptions.gpioMappingsSets[config.gamepadOptions.profileNumber-2].vpins;
+		}
+	}
+
+	for (Pin_t vpin = 0; vpin < (Pin_t)VPIN_COUNT; vpin++) {
+		// assign the functional pin to the profile pin if:
+		// 1: there was a profile to load
+		// else use whatever is in the core mapping
+		if (alts != nullptr) {
+			virtualPinMappings[vpin] = alts[vpin];
+		} else {
+			virtualPinMappings[vpin] = this->config.gpioMappings.vpins[vpin];
+		}
+	}
+}
+
 void Storage::SetGamepad(Gamepad * newpad)
 {
 	gamepad = newpad;

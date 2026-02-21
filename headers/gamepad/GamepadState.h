@@ -90,6 +90,40 @@ using namespace std;
 #define GAMEPAD_TRIGGER_MID 0x7F
 #define GAMEPAD_TRIGGER_MAX 0xFF
 
+// Vpins
+#define VPIN_MASK_0		(1UL << 0)
+#define VPIN_MASK_1		(1UL << 1)
+#define VPIN_MASK_2		(1UL << 2)
+#define VPIN_MASK_3		(1UL << 3)
+#define VPIN_MASK_4		(1UL << 4)
+#define VPIN_MASK_5		(1UL << 5)
+#define VPIN_MASK_6		(1UL << 6)
+#define VPIN_MASK_7		(1UL << 7)
+#define VPIN_MASK_8		(1UL << 8)
+#define VPIN_MASK_9		(1UL << 9)
+#define VPIN_MASK_10	(1UL << 10)
+#define VPIN_MASK_11	(1UL << 11)
+#define VPIN_MASK_12	(1UL << 12)
+#define VPIN_MASK_13	(1UL << 13)
+#define VPIN_MASK_14	(1UL << 14)
+#define VPIN_MASK_15	(1UL << 15)
+#define VPIN_MASK_16	(1UL << 16)
+#define VPIN_MASK_17	(1UL << 17)
+#define VPIN_MASK_18	(1UL << 18)
+#define VPIN_MASK_19	(1UL << 19)
+#define VPIN_MASK_20	(1UL << 20)
+#define VPIN_MASK_21	(1UL << 21)
+#define VPIN_MASK_22	(1UL << 22)
+#define VPIN_MASK_23	(1UL << 23)
+#define VPIN_MASK_24	(1UL << 24)
+#define VPIN_MASK_25	(1UL << 25)
+#define VPIN_MASK_26	(1UL << 26)
+#define VPIN_MASK_27	(1UL << 27)
+#define VPIN_MASK_28	(1UL << 28)
+#define VPIN_MASK_29	(1UL << 29)
+#define VPIN_MASK_30	(1UL << 30)
+#define VPIN_MASK_31	(1UL << 31)
+
 /**
  * @brief AUX defines --- gamepad state that doesn't translate to an output button/dpad/etc.
  * If you want to have requre the Function button for a hotkey in a board config, use `#define HOTKEY_0X_AUX_MASK 32768`
@@ -134,11 +168,17 @@ const uint32_t buttonMasks[] =
 	GAMEPAD_MASK_E12,
 };
 
+// const uint32_t vpinMasks[] =
+// {
+
+// };
+
 struct GamepadState
 {
 	uint8_t dpad {0};
 	uint8_t dpadOriginal {0};
 	uint32_t buttons {0};
+	uint32_t vpins {0};
 	uint16_t aux {0};
 	uint16_t lx {GAMEPAD_JOYSTICK_MID};
 	uint16_t ly {GAMEPAD_JOYSTICK_MID};

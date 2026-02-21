@@ -14,39 +14,48 @@ export type MaskPayload = {
 	action: PinActionValues;
 } & CustomMasks;
 
+// export type PinsType = {
+// 	pin00: MaskPayload;
+// 	pin01: MaskPayload;
+// 	pin02: MaskPayload;
+// 	pin03: MaskPayload;
+// 	pin04: MaskPayload;
+// 	pin05: MaskPayload;
+// 	pin06: MaskPayload;
+// 	pin07: MaskPayload;
+// 	pin08: MaskPayload;
+// 	pin09: MaskPayload;
+// 	pin10: MaskPayload;
+// 	pin11: MaskPayload;
+// 	pin12: MaskPayload;
+// 	pin13: MaskPayload;
+// 	pin14: MaskPayload;
+// 	pin15: MaskPayload;
+// 	pin16: MaskPayload;
+// 	pin17: MaskPayload;
+// 	pin18: MaskPayload;
+// 	pin19: MaskPayload;
+// 	pin20: MaskPayload;
+// 	pin21: MaskPayload;
+// 	pin22: MaskPayload;
+// 	pin23: MaskPayload;
+// 	pin24: MaskPayload;
+// 	pin25: MaskPayload;
+// 	pin26: MaskPayload;
+// 	pin27: MaskPayload;
+// 	pin28: MaskPayload;
+// 	pin29: MaskPayload;
+// 	profileLabel: string;
+// 	enabled: boolean;
+// };
+
 export type PinsType = {
-	pin00: MaskPayload;
-	pin01: MaskPayload;
-	pin02: MaskPayload;
-	pin03: MaskPayload;
-	pin04: MaskPayload;
-	pin05: MaskPayload;
-	pin06: MaskPayload;
-	pin07: MaskPayload;
-	pin08: MaskPayload;
-	pin09: MaskPayload;
-	pin10: MaskPayload;
-	pin11: MaskPayload;
-	pin12: MaskPayload;
-	pin13: MaskPayload;
-	pin14: MaskPayload;
-	pin15: MaskPayload;
-	pin16: MaskPayload;
-	pin17: MaskPayload;
-	pin18: MaskPayload;
-	pin19: MaskPayload;
-	pin20: MaskPayload;
-	pin21: MaskPayload;
-	pin22: MaskPayload;
-	pin23: MaskPayload;
-	pin24: MaskPayload;
-	pin25: MaskPayload;
-	pin26: MaskPayload;
-	pin27: MaskPayload;
-	pin28: MaskPayload;
-	pin29: MaskPayload;
-	profileLabel: string;
-	enabled: boolean;
+    profileLabel: string;
+    enabled: boolean;
+    // Physical pins
+    [key: `pin${string}`]: MaskPayload | any; 
+    // Virtual pins
+    [key: `vpin${string}`]: MaskPayload | any;
 };
 
 type State = {

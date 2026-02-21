@@ -271,6 +271,10 @@
 
 #define MAX_PROFILES (uint8_t)6
 
+#ifndef VPIN_COUNT
+    #define VPIN_COUNT 32
+#endif
+
 // -----------------------------------------------------
 // Migration leftovers
 // -----------------------------------------------------
@@ -1527,6 +1531,7 @@ void gpioMappingsMigrationCore(Config& config)
     }
     // reminder that this must be set or else nanopb won't retain anything
     config.gpioMappings.pins_count = NUM_BANK0_GPIOS;
+    config.gpioMappings.vpins_count = VPIN_COUNT;
 
     config.migrations.gpioMappingsMigrated = true;
 }
@@ -1578,6 +1583,7 @@ void gpioMappingsMigrationProfiles(Config& config)
 
         // reminder that this must be set or else nanopb won't retain anything
         config.profileOptions.gpioMappingsSets[profileNum].pins_count = NUM_BANK0_GPIOS;
+        config.profileOptions.gpioMappingsSets[profileNum].vpins_count = VPIN_COUNT;
     }
     // reminder that this must be set or else nanopb won't retain anything
     config.profileOptions.gpioMappingsSets_count = 5;

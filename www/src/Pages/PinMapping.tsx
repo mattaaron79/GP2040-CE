@@ -170,11 +170,10 @@ const PinSelectList = memo(function PinSelectList({
 }) {
 	const setProfilePin = useProfilesStore((state) => state.setProfilePin);
 
-	const pins = useProfilesStore(
-		useShallow((state) =>
-			omit(state.profiles[profileIndex], ['profileLabel', 'enabled']),
-		),
+	const profile = useProfilesStore(
+		useShallow((state) => state.profiles[profileIndex]),
 	);
+	
 	const { t } = useTranslation('');
 	const { buttonLabels } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
@@ -184,7 +183,6 @@ const PinSelectList = memo(function PinSelectList({
 	const onChange = useCallback(
 		(pin: string) =>
 			(selected: MultiValue<OptionType> | SingleValue<OptionType>) => {
-				// Handle clearing
 				if (!selected || (Array.isArray(selected) && !selected.length)) {
 					setProfilePin(profileIndex, pin, {
 						action: BUTTON_ACTIONS.NONE,
@@ -193,7 +191,6 @@ const PinSelectList = memo(function PinSelectList({
 					});
 				} else if (Array.isArray(selected) && selected.length > 1) {
 					const lastSelected = selected[selected.length - 1];
-					// Revert to single option if choosing action type
 					if (lastSelected.type === 'action') {
 						setProfilePin(profileIndex, pin, {
 							action: lastSelected.value,
@@ -225,48 +222,177 @@ const PinSelectList = memo(function PinSelectList({
 						);
 					}
 				} else {
+					const val = Array.isArray(selected) ? selected[0].value : selected.value;
 					setProfilePin(profileIndex, pin, {
-						action: selected[0].value,
+						action: val,
 						customButtonMask: 0,
 						customDpadMask: 0,
 					});
 				}
 			},
-		[],
+		[profileIndex, setProfilePin],
 	);
 
 	const getOptionLabel = useCallback(
 		(option: OptionType) => {
 			const labelKey = option.label?.split('BUTTON_PRESS_')?.pop();
-			// Need to fallback as some button actions are not part of button names
 			return (
 				(labelKey && buttonNames[labelKey]) ||
 				t(`Proto:GpioAction.${option.label}`)
 			);
 		},
-		[buttonNames],
+		[buttonNames, t],
 	);
+
+	// Helper to render a grid of pins based on a key prefix (e.g., "pin" or "vpin")
+	const renderGrid = (prefix: string, displayPrefix: string) => {
+		const filteredPins = Object.entries(profile)
+			.filter(([key]) => key.startsWith(prefix))
+			.sort(([a], [b]) => a.localeCompare(b)); // Ensure pin01 comes before pin02
+
+		return (
+			<div className={`${prefix}-grid gap-3 mt-2`}>
+				{filteredPins.map(([pinKey, pinData]) => {
+					// Extract the number from the key (e.g., "vpin05" -> "05")
+					const pinNumber = pinKey.replace(prefix, "");
+					return (
+						<div key={`select-${pinKey}`} className="d-flex align-items-center">
+							<div className="d-flex flex-shrink-0" style={{ width: '3.5rem' }}>
+								<label>{displayPrefix}{pinNumber}</label>
+							</div>
+							<CustomSelect
+								isClearable
+								isMulti={!isDisabled(pinData.action)}
+								options={groupedOptions}
+								isDisabled={isDisabled(pinData.action)}
+								getOptionLabel={getOptionLabel}
+								onChange={onChange(pinKey)}
+								value={getMultiValue(pinData)}
+							/>
+						</div>
+					);
+				})}
+			</div>
+		);
+	};
+
 	return (
-		<div className="pin-grid gap-3 mt-2">
-			{Object.entries(pins).map(([pin, pinData], index) => (
-				<div key={`select-${index}`} className="d-flex align-items-center">
-					<div className="d-flex flex-shrink-0" style={{ width: '3.5rem' }}>
-						<label>GP{index}</label>
-					</div>
-					<CustomSelect
-						isClearable
-						isMulti={!isDisabled(pinData.action)}
-						options={groupedOptions}
-						isDisabled={isDisabled(pinData.action)}
-						getOptionLabel={getOptionLabel}
-						onChange={onChange(pin)}
-						value={getMultiValue(pinData)}
-					/>
-				</div>
-			))}
-		</div>
+		<>
+			<h5>{t('PinMapping:header-physical-pins', 'Physical Pins')}</h5>
+			{renderGrid('pin', 'GP')}
+
+			<hr className="my-4" />
+
+			<h5>{t('PinMapping:header-virtual-pins', 'Virtual Pins')}</h5>
+			{renderGrid('vpin', 'VP')}
+		</>
 	);
 });
+
+// const PinSelectList = memo(function PinSelectList({
+// 	profileIndex,
+// }: {
+// 	profileIndex: number;
+// }) {
+// 	const setProfilePin = useProfilesStore((state) => state.setProfilePin);
+
+// 	const pins = useProfilesStore(
+// 		useShallow((state) =>
+// 			omit(state.profiles[profileIndex], ['profileLabel', 'enabled']),
+// 		),
+// 	);
+// 	const { t } = useTranslation('');
+// 	const { buttonLabels } = useContext(AppContext);
+// 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
+// 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
+// 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+
+// 	const onChange = useCallback(
+// 		(pin: string) =>
+// 			(selected: MultiValue<OptionType> | SingleValue<OptionType>) => {
+// 				// Handle clearing
+// 				if (!selected || (Array.isArray(selected) && !selected.length)) {
+// 					setProfilePin(profileIndex, pin, {
+// 						action: BUTTON_ACTIONS.NONE,
+// 						customButtonMask: 0,
+// 						customDpadMask: 0,
+// 					});
+// 				} else if (Array.isArray(selected) && selected.length > 1) {
+// 					const lastSelected = selected[selected.length - 1];
+// 					// Revert to single option if choosing action type
+// 					if (lastSelected.type === 'action') {
+// 						setProfilePin(profileIndex, pin, {
+// 							action: lastSelected.value,
+// 							customButtonMask: 0,
+// 							customDpadMask: 0,
+// 						});
+// 					} else {
+// 						setProfilePin(
+// 							profileIndex,
+// 							pin,
+// 							selected.reduce(
+// 								(masks, option) => ({
+// 									...masks,
+// 									customButtonMask:
+// 										option.type === 'customButtonMask'
+// 											? masks.customButtonMask ^ option.customButtonMask
+// 											: masks.customButtonMask,
+// 									customDpadMask:
+// 										option.type === 'customDpadMask'
+// 											? masks.customDpadMask ^ option.customDpadMask
+// 											: masks.customDpadMask,
+// 								}),
+// 								{
+// 									action: BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO,
+// 									customButtonMask: 0,
+// 									customDpadMask: 0,
+// 								},
+// 							),
+// 						);
+// 					}
+// 				} else {
+// 					setProfilePin(profileIndex, pin, {
+// 						action: selected[0].value,
+// 						customButtonMask: 0,
+// 						customDpadMask: 0,
+// 					});
+// 				}
+// 			},
+// 		[],
+// 	);
+
+// 	const getOptionLabel = useCallback(
+// 		(option: OptionType) => {
+// 			const labelKey = option.label?.split('BUTTON_PRESS_')?.pop();
+// 			// Need to fallback as some button actions are not part of button names
+// 			return (
+// 				(labelKey && buttonNames[labelKey]) ||
+// 				t(`Proto:GpioAction.${option.label}`)
+// 			);
+// 		},
+// 		[buttonNames],
+// 	);
+// 	return (
+// 		<div className="pin-grid gap-3 mt-2">
+// 			{Object.entries(pins).map(([pin, pinData], index) => (
+// 				<div key={`select-${index}`} className="d-flex align-items-center">
+// 					<div className="d-flex flex-shrink-0" style={{ width: '3.5rem' }}>
+// 						<label>GP{index}</label>
+// 					</div>
+// 					<CustomSelect
+// 						isClearable
+// 						isMulti={!isDisabled(pinData.action)}
+// 						options={groupedOptions}
+// 						isDisabled={isDisabled(pinData.action)}
+// 						getOptionLabel={getOptionLabel}
+// 						onChange={onChange(pin)}
+// 						value={getMultiValue(pinData)}
+// 					/>
+// 				</div>
+// 			))}
+// 		</div>
+// 	);
+// });
 
 const PinSection = memo(function PinSection({
 	profileIndex,
@@ -307,6 +433,7 @@ const PinSection = memo(function PinSection({
 			setSaveMessage(t('Common:saved-success-message'));
 		} catch (error) {
 			setSaveMessage(t('Common:saved-error-message'));
+			// console.error('Error saving profiles:', error);
 		}
 	}, []);
 

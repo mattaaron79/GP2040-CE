@@ -22,10 +22,12 @@ struct GamepadButtonMapping
 {
 	GamepadButtonMapping(Mask_t bm) :
 		pinMask(0),
+		vpinMask(0),
 		buttonMask(bm)
 	{}
 
 	uint32_t pinMask;
+	uint32_t vpinMask;
 	const uint32_t buttonMask;
 };
 
@@ -37,6 +39,7 @@ public:
 	void reinit();
 	void process();
 	void read();
+	void readVirtual();
 	void save();
 
 	void hotkey();
@@ -189,6 +192,40 @@ public:
 	GamepadButtonMapping *mapAnalogRSYPos;
 	GamepadButtonMapping *map48WayMode;
 	GamepadButtonMapping *mapFocusMode;
+
+	// Vpins
+	GamepadButtonMapping *mapVpin0;
+	GamepadButtonMapping *mapVpin1;
+	GamepadButtonMapping *mapVpin2;
+	GamepadButtonMapping *mapVpin3;
+	GamepadButtonMapping *mapVpin4;
+	GamepadButtonMapping *mapVpin5;
+	GamepadButtonMapping *mapVpin6;
+	GamepadButtonMapping *mapVpin7;
+	GamepadButtonMapping *mapVpin8;
+	GamepadButtonMapping *mapVpin9;
+	GamepadButtonMapping *mapVpin10;
+	GamepadButtonMapping *mapVpin11;
+	GamepadButtonMapping *mapVpin12;
+	GamepadButtonMapping *mapVpin13;
+	GamepadButtonMapping *mapVpin14;
+	GamepadButtonMapping *mapVpin15;
+	GamepadButtonMapping *mapVpin16;
+	GamepadButtonMapping *mapVpin17;
+	GamepadButtonMapping *mapVpin18;
+	GamepadButtonMapping *mapVpin19;
+	GamepadButtonMapping *mapVpin20;
+	GamepadButtonMapping *mapVpin21;
+	GamepadButtonMapping *mapVpin22;
+	GamepadButtonMapping *mapVpin23;
+	GamepadButtonMapping *mapVpin24;
+	GamepadButtonMapping *mapVpin25;
+	GamepadButtonMapping *mapVpin26;
+	GamepadButtonMapping *mapVpin27;
+	GamepadButtonMapping *mapVpin28;
+	GamepadButtonMapping *mapVpin29;
+	GamepadButtonMapping *mapVpin30;
+	GamepadButtonMapping *mapVpin31;
 
 	// gamepad specific proxy of debounced buttons --- 1 = active (inverse of the raw GPIO)
 	// see GP2040::debounceGpioGetAll for details

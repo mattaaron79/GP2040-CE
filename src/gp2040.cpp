@@ -71,6 +71,7 @@ void GP2040::setup() {
 
 	// Set pin mappings for all GPIO functions
 	Storage::getInstance().setFunctionalPinMappings();
+	Storage::getInstance().setVirtualPinMappings();
 
 	// power up...
 	gamepad->auxState.power.pluggedIn = true;
@@ -321,6 +322,7 @@ void GP2040::run() {
 		// Pre-Process add-ons for MPGS
 		addons.PreprocessAddons();
 
+		gamepad->readVirtual();
 		
 
 		gamepad->process(); // process through MPGS
@@ -369,6 +371,7 @@ void GP2040::getReinitGamepad(Gamepad * gamepad) {
 		// now we can load the latest configured profile, which will map the
 		// new set of GPIOs to use...
 		Storage::getInstance().setFunctionalPinMappings();
+		Storage::getInstance().setVirtualPinMappings();
 
 		// ...and initialize the pins again
 		this->initializeStandardGpio();
