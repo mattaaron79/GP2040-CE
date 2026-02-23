@@ -170,7 +170,7 @@ void HETriggerAddon::determinePressed() {
         }
 
         float idle = triggerInfo.idle;
-        float maxVal = triggerInfo.max;
+        float maxVal = triggerInfo.pressed;
 
         // Clamp min value at idle. If maxVal is over idle, voltage reading should be at idle or above, otherwise below
         if (maxVal > idle) {
