@@ -75,6 +75,8 @@ void HETriggerAddon::setup() {
                 lastADCSelected = muxPinArray[mux];
             }
             emaSmoothingReads[i] = adc_read();
+            lastIncrement[i] = adc_read();
+            triggerActive[i] = false;
         }
         emaSmoothingFactor = (float)options.smoothingFactor / 100.f; // 99 = max smoothing factor
     }
