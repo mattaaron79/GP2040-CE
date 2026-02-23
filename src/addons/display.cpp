@@ -82,6 +82,10 @@ void DisplayAddon::setup() {
     } else {
         currDisplayMode = DisplayMode::CONFIG_INSTRUCTION;
     }
+
+    // Force ANALOG BUTTONS for now
+    currDisplayMode = DisplayMode::ANALOG_BUTTONS;
+
     gpScreen = nullptr;
     updateDisplayScreen();
     setMenuMappings();
@@ -110,6 +114,9 @@ bool DisplayAddon::updateDisplayScreen() {
             break;
         case BUTTONS:
             gpScreen = new ButtonLayoutScreen(gpDisplay);
+            break;
+        case ANALOG_BUTTONS:
+            gpScreen = new AnalogButtonLayoutScreen(gpDisplay);
             break;
         case PIN_VIEWER:
             gpScreen = new PinViewerScreen(gpDisplay);

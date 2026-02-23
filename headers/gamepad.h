@@ -9,6 +9,7 @@
 #include "enums.pb.h"
 #include "gamepad/GamepadState.h"
 #include "gamepad/GamepadAuxState.h"
+#include "gamepad/GamepadAnalogState.h"
 
 #include "pico/stdlib.h"
 
@@ -45,6 +46,7 @@ public:
 	void hotkey();
 	void clearState();
 	void clearRumbleState();
+	void clearAnalogState();
 
 	/**
 	 * @brief Flag to indicate analog trigger support.
@@ -142,6 +144,7 @@ public:
 	GamepadState state;
 	GamepadState turboState;
 	GamepadAuxState auxState;
+	GamepadAnalogState analogState;
 	GamepadButtonMapping *mapDpadUp;
 	GamepadButtonMapping *mapDpadDown;
 	GamepadButtonMapping *mapDpadLeft;

@@ -4,6 +4,7 @@
 enum DisplayMode {
     CONFIG_INSTRUCTION,
     BUTTONS,
+    ANALOG_BUTTONS,
     SPLASH,
     PIN_VIEWER,
     DISPLAY_SAVER,

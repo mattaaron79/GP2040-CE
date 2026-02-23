@@ -85,8 +85,10 @@ class GPGFX_TinySSD1306 : public GPGFX_DisplayBase {
 
         bool _isPowered = false;
 
+        // static const uint16_t MAX_SCREEN_WIDTH = 128;
+        // static const uint16_t MAX_SCREEN_HEIGHT = 64;
+        static const uint16_t MAX_SCREEN_HEIGHT = 32;
         static const uint16_t MAX_SCREEN_WIDTH = 128;
-        static const uint16_t MAX_SCREEN_HEIGHT = 64;
         static const uint16_t MAX_SCREEN_SIZE = (MAX_SCREEN_WIDTH * MAX_SCREEN_HEIGHT / 8);
 
         GPGFX_DisplayTypeOptions _options;

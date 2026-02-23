@@ -559,6 +559,10 @@ public:
     virtual std::string name() { return HETriggerAddonName; }
 private:
     void selectChannel(uint8_t channel);
+    void readVoltages(int numReads, int sleepMicro, bool doDummyRead);
+    void calibrateAnalogIdle();
+    void determinePressed();
+    void updateGamepadState();
     uint16_t emaSmoothing(uint16_t value, uint16_t previous);
     int muxTotal;
     int selectPins;

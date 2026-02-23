@@ -9,7 +9,6 @@ void GPGFX_TinySSD1306::init(GPGFX_DisplayTypeOptions options) {
     _options.orientation = options.orientation;
     _options.inverted = options.inverted;
     _options.font = options.font;
-    _options.contrast = options.contrast;
 
     _options.i2c->readRegister(_options.address, 0x00, &this->screenType, 1);
     this->screenType &= 0x0F;
@@ -29,12 +28,15 @@ void GPGFX_TinySSD1306::init(GPGFX_DisplayTypeOptions options) {
 		0x00,
 
 		CommandOps::SET_CONTRAST,
-		_options.contrast,
+		0xFF,
 
 		(!_options.inverted ? CommandOps::NORMAL_DISPLAY : CommandOps::INVERT_DISPLAY),
 
-		CommandOps::SET_MULTIPLEX,
-		63,
+		// CommandOps::SET_MULTIPLEX,
+		// 63,
+
+        CommandOps::SET_MULTIPLEX,
+        31, // TODO: MAKE DYNAMIC BASED ON SIZE
 
 		CommandOps::SET_DISPLAY_OFFSET,
 		0x00,
@@ -45,8 +47,11 @@ void GPGFX_TinySSD1306::init(GPGFX_DisplayTypeOptions options) {
 		CommandOps::SET_PRECHARGE,
 		0x22,
 
-		CommandOps::SET_COM_PINS,
-		0x12,
+		// CommandOps::SET_COM_PINS,
+		// 0x12,
+
+        CommandOps::SET_COM_PINS,
+        0x02, // TODO: MAKE DYNAMIC BASED ON SIZE
 
 		CommandOps::SET_VCOM_DETECT,
 		0x40,
@@ -134,7 +139,7 @@ uint32_t GPGFX_TinySSD1306::getPixel(uint8_t x, uint8_t y) {
     return result;
 }
 
-void GPGFX_TinySSD1306::drawPixel(uint8_t x, uint8_t y, uint32_t color) {
+void GPGFX_TinySSD1306::drawPixel(uint8_t y, uint8_t x, uint32_t color) {
 	uint16_t row, bitIndex;
 
 	if ((x<MAX_SCREEN_WIDTH) and (y<MAX_SCREEN_HEIGHT))
@@ -542,7 +547,8 @@ void GPGFX_TinySSD1306::drawSprite(uint8_t* image, uint16_t width, uint16_t heig
 }
 
 void GPGFX_TinySSD1306::drawBuffer(uint8_t* pBuffer) {
-	uint16_t bufferSize = MAX_SCREEN_SIZE;
+	// uint16_t bufferSize = MAX_SCREEN_SIZE;
+    uint16_t bufferSize = (MAX_SCREEN_WIDTH * 32) / 8;
 	uint8_t buffer[bufferSize+1] = {SET_START_LINE};
 
 	int result = -1;
@@ -566,7 +572,8 @@ void GPGFX_TinySSD1306::drawBuffer(uint8_t* pBuffer) {
     } else {
         sendCommand(CommandOps::PAGE_ADDRESS);
         sendCommand(0x00);
-        sendCommand(0x07);
+        // sendCommand(0x07);
+        sendCommand(0x03); // TODO: MAKE DYNAMIC BASED ON SIZE
         sendCommand(CommandOps::COLUMN_ADDRESS);
         sendCommand(0x00);
         sendCommand(0x7F);

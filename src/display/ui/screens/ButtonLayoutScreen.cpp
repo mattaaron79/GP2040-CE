@@ -567,3 +567,80 @@ void ButtonLayoutScreen::trim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(),
             std::not1(std::ptr_fun<int, int>(std::isspace))));
 }
+
+void AnalogButtonLayoutScreen::init() {
+    //ButtonLayoutScreen::init();
+    // Additional analog-specific initialization can be added here
+    // options = Storage::getInstance().getAddonOptions().heTriggerOptions;
+}
+
+void AnalogButtonLayoutScreen::shutdown() {
+    ButtonLayoutScreen::shutdown();
+    // Additional analog-specific cleanup can be added here
+}
+
+int8_t AnalogButtonLayoutScreen::update() {
+    // Call parent update first
+    // int8_t result = ButtonLayoutScreen::update();
+    
+    // Additional analog-specific update logic can be added here
+    
+    
+    return -1;
+}
+
+void AnalogButtonLayoutScreen::drawScreen() {
+    HETriggerOptions & options = Storage::getInstance().getAddonOptions().heTriggerOptions;
+    Gamepad* gamepad = Storage::getInstance().GetGamepad();
+    GamepadAnalogState analogState = gamepad->analogState;
+    
+    gamepad = Storage::getInstance().GetGamepad();
+
+    // Vertical bars
+    float x = 0;
+    float y = 127;
+    float x2 = 0;
+    float y2 = 0;
+
+    float highest = 0.0f;
+
+    getRenderer()->drawLine(0, y, 27, y, true, true); // top line
+
+    for (uint8_t he = 0; he < 32; he++) {
+        HETriggerInfo& triggerInfo = options.triggers[he];
+
+        // PhysicalButtonInfo info = options.buttonInfo[i];p1
+        if (triggerInfo.action != -10) {
+            // float value = gamepad->state.analogPressedAmount[he];
+            float value = gamepad->analogState.readingsNormalized[he];
+
+            y2 = y - (value * 100); // Scale value to pixel height
+            x = he * 4;
+            x2 = x + 3;
+            // bool isPressed = gamepad->state.physicalButtons & (1 << i);
+            bool isPressed = gamepad->analogState.pressed[he];
+
+            // Pressed amount rectangle
+            getRenderer()->drawRectangle(x, y, x2, y2, true, isPressed);
+            float trigger = gamepad->analogState.triggerPoints[he] * 100;
+            float lastY = y - (trigger);
+
+            // Trigger line
+            getRenderer()->drawRectangle(x, lastY - 1, x2, lastY, !isPressed, true);
+            highest = std::max(highest, value);
+        }
+    }
+
+
+    // getRenderer()->drawText(0, 0, std::to_string(highest).substr(0, 5));
+    getRenderer()->drawText(0, 0, "h:" + std::string(3 - std::to_string(static_cast<int>(highest * 100)).length(), ' ') + std::to_string(static_cast<int>(highest * 100)));
+    getRenderer()->drawText(0, 1, "a:" + std::string(3 - std::to_string(static_cast<int>(options.active * 100)).length(), ' ') + std::to_string(static_cast<int>(options.active * 100)));
+    getRenderer()->drawText(0, 2, "r:" + std::string(3 - std::to_string(static_cast<int>(options.release * 100)).length(), ' ') + std::to_string(static_cast<int>(options.release * 100)));
+    // getRenderer()->drawText(0, 3, gamepad->state.debugString);
+    // getRenderer()->drawText(0, 4, gamepad->state.debugString2);
+    // getRenderer()->drawText(0, 5, std::to_string(Storage::getInstance().shaberiCounter));
+
+
+    // ButtonLayoutScreen::drawScreen();
+    // Additional analog-specific drawing can be added here
+}

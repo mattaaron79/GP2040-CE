@@ -729,6 +729,17 @@ void Gamepad::clearState() {
 	state.rt = 0;
 }
 
+void Gamepad::clearAnalogState() {
+	for (int i = 0; i < 32; i++) {
+		analogState.triggerPoints[i] = 0.0f;
+		analogState.pressed[i] = false;
+		analogState.readings[i] = 0;
+		analogState.readingsNormalized[i] = 0.0f;
+		analogState.lastPressTime[i] = 0;
+	}
+	analogState.lastPressTimeAny = 0;
+}
+
 void Gamepad::clearRumbleState() {
 	auxState.haptics.leftActuator.active = false;
 	auxState.haptics.leftActuator.intensity = 0;

@@ -197,4 +197,19 @@ class ButtonLayoutScreen : public GPScreen {
         bool pressedDownRight();
 };
 
+class AnalogButtonLayoutScreen : public ButtonLayoutScreen {
+    public:
+        AnalogButtonLayoutScreen() {}
+        AnalogButtonLayoutScreen(GPGFX* renderer) { setRenderer(renderer); }
+        virtual ~AnalogButtonLayoutScreen(){}
+        virtual int8_t update();
+        virtual void init();
+        virtual void shutdown();
+    protected:
+        virtual void drawScreen();
+    private:
+        Gamepad* gamepad;
+        // std::reference_wrapper<HETriggerOptions> options;
+};
+
 #endif
