@@ -1545,8 +1545,8 @@ static uint32_t calibrationSmoothingFactor = 0;
 static float ema_smoothing;
 static uint32_t smoothingRead = 0;
 
-// Get the HE Trigger Calibration using our manual GPIO input and everything
-std::string setHETriggerCalibration()
+// Get the HE Trigger Options using our manual GPIO input and everything
+std::string setHETriggerOptions()
 {
     DynamicJsonDocument doc = get_post_data();
     calibrationMuxChannels = doc["muxChannels"];
@@ -1590,7 +1590,7 @@ uint16_t emaCalculation(uint16_t value, uint16_t previous) {
 }
 
 // Get the HE Trigger Calibration using our manual GPIO input and everything
-std::string getHETriggerCalibration()
+std::string getHETriggerVoltage()
 {
     DynamicJsonDocument postDoc = get_post_data();
     uint32_t id = postDoc["targetId"];
@@ -1663,7 +1663,7 @@ std::string getHETriggerCalibration()
     return serialize_json(doc);
 }
 
-std::string getHETriggerOptions()
+std::string getHETriggerCalibrations()
 {
     const size_t capacity = JSON_OBJECT_SIZE(500);
     DynamicJsonDocument doc(capacity);
@@ -1676,15 +1676,18 @@ std::string getHETriggerOptions()
         trigger["action"] = heTriggers[i].action;
         trigger["idle"] = heTriggers[i].idle;
         trigger["active"] = heTriggers[i].active;
-        trigger["max"] = heTriggers[i].max;
-        trigger["polarity"] = heTriggers[i].polarity;
+        trigger["pressed"] = heTriggers[i].pressed;
+        trigger["is_polarized"] = heTriggers[i].is_polarized;
+        trigger["release"] = heTriggers[i].release;
+        trigger["noise"] = heTriggers[i].noise;
+        trigger["rapidTrigger"] = heTriggers[i].rapidTrigger;
     }
 
     return serialize_json(doc);
 }
 
-// Set Hall Effect Trigger Options
-std::string setHETriggerOptions()
+// Set Hall Effect Trigger Calibrations
+std::string setHETriggerCalibrations()
 {
     DynamicJsonDocument doc = get_post_data();
     HETriggerInfo * heTriggers = Storage::getInstance().getAddonOptions().heTriggerOptions.triggers;
@@ -1693,8 +1696,11 @@ std::string setHETriggerOptions()
         heTriggers[i].action = doc["triggers"][i]["action"];
         heTriggers[i].idle = doc["triggers"][i]["idle"];
         heTriggers[i].active = doc["triggers"][i]["active"];
-        heTriggers[i].max = doc["triggers"][i]["max"];
-        heTriggers[i].polarity = doc["triggers"][i]["polarity"];
+        heTriggers[i].pressed = doc["triggers"][i]["pressed"];
+        heTriggers[i].is_polarized = doc["triggers"][i]["is_polarized"];
+        heTriggers[i].release = doc["triggers"][i]["release"];
+        heTriggers[i].noise = doc["triggers"][i]["noise"];
+        heTriggers[i].rapidTrigger = doc["triggers"][i]["rapidTrigger"];
     }
     
     Storage::getInstance().getAddonOptions().heTriggerOptions.triggers_count = 32;
@@ -2759,10 +2765,10 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/getI2CPeripheralMap", getI2CPeripheralMap },
     { "/api/setExpansionPins", setExpansionPins },
     { "/api/getExpansionPins", getExpansionPins },
+    { "/api/setHETriggerCalibrations", setHETriggerCalibrations },
+    { "/api/getHETriggerCalibrations", getHETriggerCalibrations },
+    { "/api/getHETriggerVoltage", getHETriggerVoltage },
     { "/api/setHETriggerOptions", setHETriggerOptions },
-    { "/api/getHETriggerOptions", getHETriggerOptions },
-    { "/api/getHETriggerCalibration", getHETriggerCalibration },
-    { "/api/setHETriggerCalibration", setHETriggerCalibration },
     { "/api/setReactiveLEDs", setReactiveLEDs },
     { "/api/getReactiveLEDs", getReactiveLEDs },
     { "/api/setKeyMappings", setKeyMappings },
