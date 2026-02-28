@@ -62,6 +62,9 @@ import HETrigger, {
 	HETriggerState,
 } from '../Addons/HETrigger';
 
+import Shaberi, { shaberiScheme, shaberiState } from '../Addons/Shaberi';
+
+
 export type AddonPropTypes = {
 	values: typeof DEFAULT_VALUES;
 	errors: FormikErrors<typeof DEFAULT_VALUES>;
@@ -91,6 +94,7 @@ const schema = yup.object().shape({
 	...reactiveLEDScheme,
 	...gamepadUSBHostScheme,
 	...HETriggerScheme,
+	...shaberiScheme,
 });
 
 export const DEFAULT_VALUES = {
@@ -116,6 +120,7 @@ export const DEFAULT_VALUES = {
 	...reactiveLEDState,
 	...gamepadUSBHostState,
 	...HETriggerState,
+	...shaberiState,
 } as const;
 
 const ADDONS = [
@@ -141,6 +146,7 @@ const ADDONS = [
 	DRV8833Rumble,
 	ReactiveLED,
 	HETrigger,
+	Shaberi,
 ];
 
 const FormContext = ({ setStoredData }) => {

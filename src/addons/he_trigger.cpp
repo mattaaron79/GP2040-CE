@@ -196,8 +196,8 @@ void HETriggerAddon::determinePressed() {
         bool isPressed = analogState.pressed[he];
 
         bool rapidTrigger = true;
-        float actuate = 0.15f;
-        float release = 0.15f;
+        float actuate = 0.07f;
+        float release = 0.07f;
 
         // Based on global analog settings
         // rapidTrigger = options.rapidTrigger;
@@ -242,7 +242,6 @@ void HETriggerAddon::determinePressed() {
         uint32_t now = to_ms_since_boot(get_absolute_time());
         if (physicalPressed) {
             analogState.lastPressTime[he] = now;
-            analogState.lastPressTimeAny = now;
         }
 
         // Is considered effectively pressed if currently physically pressed, or if it was released within the latch time threshold

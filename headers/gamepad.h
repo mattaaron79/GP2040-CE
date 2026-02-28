@@ -69,6 +69,13 @@ public:
 	inline bool __attribute__((always_inline)) pressedButton(const uint32_t mask) {
 		return (state.buttons & mask) == mask;
 	}
+	
+	/**
+	 *  @brief Check for a virtual pin press. Used by `pressed[Vpin]` helper methods.
+	 */
+	inline bool __attribute__((always_inline)) pressedVpin(const uint32_t mask) {
+		return (state.vpins & mask) == mask;
+	}
 
 	/**
 	 * @brief Check for a dpad press. Used by `pressed[Dpad]` helper methods.
@@ -133,6 +140,39 @@ public:
 	inline bool __attribute__((always_inline)) pressedE10()   { return pressedButton(GAMEPAD_MASK_E10); }
 	inline bool __attribute__((always_inline)) pressedE11()   { return pressedButton(GAMEPAD_MASK_E11); }
 	inline bool __attribute__((always_inline)) pressedE12()   { return pressedButton(GAMEPAD_MASK_E12); }
+
+	inline bool __attribute__((always_inline)) pressedVpin0()   { return pressedVpin(VPIN_MASK_0); }
+	inline bool __attribute__((always_inline)) pressedVpin1()   { return pressedVpin(VPIN_MASK_1); }
+	inline bool __attribute__((always_inline)) pressedVpin2()   { return pressedVpin(VPIN_MASK_2); }
+	inline bool __attribute__((always_inline)) pressedVpin3()   { return pressedVpin(VPIN_MASK_3); }
+	inline bool __attribute__((always_inline)) pressedVpin4()   { return pressedVpin(VPIN_MASK_4); }
+	inline bool __attribute__((always_inline)) pressedVpin5()   { return pressedVpin(VPIN_MASK_5); }
+	inline bool __attribute__((always_inline)) pressedVpin6()   { return pressedVpin(VPIN_MASK_6); }
+	inline bool __attribute__((always_inline)) pressedVpin7()   { return pressedVpin(VPIN_MASK_7); }
+	inline bool __attribute__((always_inline)) pressedVpin8()   { return pressedVpin(VPIN_MASK_8); }
+	inline bool __attribute__((always_inline)) pressedVpin9()   { return pressedVpin(VPIN_MASK_9); }
+	inline bool __attribute__((always_inline)) pressedVpin10()  { return pressedVpin(VPIN_MASK_10); }
+	inline bool __attribute__((always_inline)) pressedVpin11()  { return pressedVpin(VPIN_MASK_11); }
+	inline bool __attribute__((always_inline)) pressedVpin12()  { return pressedVpin(VPIN_MASK_12); }
+	inline bool __attribute__((always_inline)) pressedVpin13()  { return pressedVpin(VPIN_MASK_13); }
+	inline bool __attribute__((always_inline)) pressedVpin14()  { return pressedVpin(VPIN_MASK_14); }
+	inline bool __attribute__((always_inline)) pressedVpin15()  { return pressedVpin(VPIN_MASK_15); }
+	inline bool __attribute__((always_inline)) pressedVpin16()  { return pressedVpin(VPIN_MASK_16); }
+	inline bool __attribute__((always_inline)) pressedVpin17()  { return pressedVpin(VPIN_MASK_17); }
+	inline bool __attribute__((always_inline)) pressedVpin18()  { return pressedVpin(VPIN_MASK_18); }
+	inline bool __attribute__((always_inline)) pressedVpin19()  { return pressedVpin(VPIN_MASK_19); }
+	inline bool __attribute__((always_inline)) pressedVpin20()  { return pressedVpin(VPIN_MASK_20); }
+	inline bool __attribute__((always_inline)) pressedVpin21()  { return pressedVpin(VPIN_MASK_21); }
+	inline bool __attribute__((always_inline)) pressedVpin22()  { return pressedVpin(VPIN_MASK_22); }
+	inline bool __attribute__((always_inline)) pressedVpin23()  { return pressedVpin(VPIN_MASK_23); }
+	inline bool __attribute__((always_inline)) pressedVpin24()  { return pressedVpin(VPIN_MASK_24); }
+	inline bool __attribute__((always_inline)) pressedVpin25()  { return pressedVpin(VPIN_MASK_25); }
+	inline bool __attribute__((always_inline)) pressedVpin26()  { return pressedVpin(VPIN_MASK_26); }
+	inline bool __attribute__((always_inline)) pressedVpin27()  { return pressedVpin(VPIN_MASK_27); }
+	inline bool __attribute__((always_inline)) pressedVpin28()  { return pressedVpin(VPIN_MASK_28); }
+	inline bool __attribute__((always_inline)) pressedVpin29()  { return pressedVpin(VPIN_MASK_29); }
+	inline bool __attribute__((always_inline)) pressedVpin30()  { return pressedVpin(VPIN_MASK_30); }
+	inline bool __attribute__((always_inline)) pressedVpin31()  { return pressedVpin(VPIN_MASK_31); }
 
 	const GamepadOptions& getOptions() const { return options; }
 	const DpadMode getActiveDpadMode() { return activeDpadMode; }

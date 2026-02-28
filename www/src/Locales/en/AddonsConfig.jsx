@@ -217,4 +217,12 @@ export default {
 	'tg16-extension-data-pin2-label': 'Data GPIO Pin 2 (D_SELECT)',
 	'tg16-extension-data-pin3-label': 'Data GPIO Pin 3 (L_RUN)',
 	'tg16-extension-desc-header': 'PC Engine/TurboGrafx-16 Extension Mapping',
+	'shaberi-header-text': 'Shaberi Configuration',
+	'shaberi-is-senpai': 'Is Senpai (Main Unit) vs Kouhai (Sub Unit)',
+	'shaberi-uart0-enabled': 'Enable UART0',
+	'shaberi-uart0-rx-pin-label': 'UART0 RX GPIO Pin',
+	'shaberi-uart0-tx-pin-label': 'UART0 TX GPIO Pin',
+	'shaberi-uart1-enabled': 'Enable UART1',
+	'shaberi-uart1-rx-pin-label': 'UART1 RX GPIO Pin',
+	'shaberi-uart1-tx-pin-label': 'UART1 TX GPIO Pin',
 };

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <string>
 #include <stdint.h>
 #include <list>
 using namespace std;
@@ -190,6 +191,10 @@ struct GamepadState
 	float ema_1_y {GAMEPAD_JOYSTICK_MID};
 	float ema_2_x {GAMEPAD_JOYSTICK_MID};
 	float ema_2_y {GAMEPAD_JOYSTICK_MID};
+
+	string debugString; // For displaying debug info on the screen, if needed
+	string debugString2;
+	int shaberiCounter = 0;
 };
 
 // Convert the horizontal GamepadState dpad axis value into an analog value

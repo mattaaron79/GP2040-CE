@@ -31,6 +31,7 @@
 #include "addons/gamepad_usb_host.h"
 #include "addons/he_trigger.h"
 #include "addons/tg16_input.h"
+#include "addons/shaberi.h"
 
 // Pico includes
 #include "pico/bootrom.h"
@@ -109,6 +110,7 @@ void GP2040::setup() {
 	addons.LoadUSBAddon(new GamepadUSBHostAddon());
 	addons.LoadAddon(new AnalogInput());
 	addons.LoadAddon(new HETriggerAddon());
+	addons.LoadAddon(new Shaberi());
 	addons.LoadAddon(new BootselButtonAddon());
 	addons.LoadAddon(new DualDirectionalInput());
 	addons.LoadAddon(new FocusModeAddon());
@@ -426,7 +428,7 @@ GP2040::BootAction GP2040::getBootAction() {
 
 				if (gamepad->pressedS1() && gamepad->pressedS2() && gamepad->pressedUp()) {
 					return BootAction::ENTER_USB_MODE;
-				} else if (!webConfigLocked && gamepad->pressedS2()) {
+				} else if (!webConfigLocked && (gamepad->pressedS2() || gamepad->pressedVpin10())) {
 					return BootAction::ENTER_WEBCONFIG_MODE;
                 } else {
                     if (!modeSwitchLocked) {

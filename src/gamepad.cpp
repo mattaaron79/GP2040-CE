@@ -737,7 +737,6 @@ void Gamepad::clearAnalogState() {
 		analogState.readingsNormalized[i] = 0.0f;
 		analogState.lastPressTime[i] = 0;
 	}
-	analogState.lastPressTimeAny = 0;
 }
 
 void Gamepad::clearRumbleState() {

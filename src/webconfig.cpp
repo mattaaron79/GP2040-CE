@@ -1961,6 +1961,16 @@ std::string setAddonOptions()
     docToValue(heTriggerOptions.emaSmoothing, doc, "heTriggerSmoothing");
     docToValue(heTriggerOptions.smoothingFactor, doc, "heTriggerSmoothingFactor");
 
+    ShaberiOptions& shaberiOptions = Storage::getInstance().getAddonOptions().shaberiOptions;
+    docToValue(shaberiOptions.enabled, doc, "ShaberiAddonEnabled");
+    docToValue(shaberiOptions.isSenpai, doc, "shaberiIsSenpai");
+    docToValue(shaberiOptions.uartEnabled0, doc, "shaberiUartEnabled0");
+    docToValue(shaberiOptions.uartEnabled1, doc, "shaberiUartEnabled1");
+    docToPin(shaberiOptions.pinUartRx0, doc, "shaberiPinUartRx0");
+    docToPin(shaberiOptions.pinUartTx0, doc, "shaberiPinUartTx0");
+    docToPin(shaberiOptions.pinUartRx1, doc, "shaberiPinUartRx1");
+    docToPin(shaberiOptions.pinUartTx1, doc, "shaberiPinUartTx1");
+
     EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true));
 
     return serialize_json(doc);
@@ -2418,6 +2428,16 @@ std::string getAddonOptions()
     writeDoc(doc, "muxADCPin3", cleanPin(heTriggerOptions.muxADCPin3));
     writeDoc(doc, "heTriggerSmoothing", heTriggerOptions.emaSmoothing);
     writeDoc(doc, "heTriggerSmoothingFactor", heTriggerOptions.smoothingFactor);
+
+    const ShaberiOptions& shaberiOptions = Storage::getInstance().getAddonOptions().shaberiOptions;
+    writeDoc(doc, "ShaberiAddonEnabled", shaberiOptions.enabled);
+    writeDoc(doc, "shaberiIsSenpai", shaberiOptions.isSenpai);
+    writeDoc(doc, "shaberiUartEnabled0", shaberiOptions.uartEnabled0);
+    writeDoc(doc, "shaberiUartEnabled1", shaberiOptions.uartEnabled1);
+    writeDoc(doc, "shaberiPinUartRx0", cleanPin(shaberiOptions.pinUartRx0));
+    writeDoc(doc, "shaberiPinUartTx0", cleanPin(shaberiOptions.pinUartTx0));
+    writeDoc(doc, "shaberiPinUartRx1", cleanPin(shaberiOptions.pinUartRx1));
+    writeDoc(doc, "shaberiPinUartTx1", cleanPin(shaberiOptions.pinUartTx1));
 
     return serialize_json(doc);
 }

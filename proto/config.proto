@@ -897,6 +897,18 @@ message HETriggerOptions
     optional bool rapidTrigger = 16;
 }
 
+message ShaberiOptions
+{
+    optional bool enabled = 1;
+    optional bool isSenpai = 2;
+    optional bool uartEnabled0 = 3;
+    optional bool uartEnabled1 = 4;
+    optional int32 pinUartRx0 = 5;
+    optional int32 pinUartTx0 = 6;
+    optional int32 pinUartRx1 = 7;
+    optional int32 pinUartTx1 = 8;
+}
+
 message AddonOptions
 {
     optional BootselButtonOptions bootselButtonOptions = 1;
@@ -929,6 +941,7 @@ message AddonOptions
     optional GamepadUSBHostOptions gamepadUSBHostOptions = 28;
     optional TG16Options tg16Options = 29;
     optional HETriggerOptions heTriggerOptions = 30;
+    optional ShaberiOptions shaberiOptions = 31;
 }
 
 message MigrationHistory

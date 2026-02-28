@@ -636,9 +636,9 @@ void AnalogButtonLayoutScreen::drawScreen() {
     getRenderer()->drawText(0, 0, "h:" + std::string(3 - std::to_string(static_cast<int>(highest * 100)).length(), ' ') + std::to_string(static_cast<int>(highest * 100)));
     getRenderer()->drawText(0, 1, "a:" + std::string(3 - std::to_string(static_cast<int>(options.active * 100)).length(), ' ') + std::to_string(static_cast<int>(options.active * 100)));
     getRenderer()->drawText(0, 2, "r:" + std::string(3 - std::to_string(static_cast<int>(options.release * 100)).length(), ' ') + std::to_string(static_cast<int>(options.release * 100)));
-    // getRenderer()->drawText(0, 3, gamepad->state.debugString);
-    // getRenderer()->drawText(0, 4, gamepad->state.debugString2);
-    // getRenderer()->drawText(0, 5, std::to_string(Storage::getInstance().shaberiCounter));
+    getRenderer()->drawText(0, 3, gamepad->state.debugString);
+    getRenderer()->drawText(0, 4, gamepad->state.debugString2);
+    getRenderer()->drawText(0, 5, std::to_string(gamepad->state.shaberiCounter));
 
 
     // ButtonLayoutScreen::drawScreen();
