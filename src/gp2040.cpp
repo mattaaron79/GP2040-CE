@@ -322,6 +322,7 @@ void GP2040::run() {
 		// Pre-Process add-ons for MPGS
 		addons.PreprocessAddons();
 
+		// Set gamepad state from virtual pins
 		gamepad->readVirtual();
 		
 
