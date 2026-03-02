@@ -196,8 +196,8 @@ void HETriggerAddon::determinePressed() {
         bool isPressed = analogState.pressed[he];
 
         bool rapidTrigger = true;
-        float actuate = 0.07f;
-        float release = 0.07f;
+        float actuate = 0.05f;
+        float release = 0.04f;
 
         // Based on global analog settings
         // rapidTrigger = options.rapidTrigger;

@@ -288,6 +288,7 @@ public:
 
 private:
 	void processHotkeyAction(GamepadHotkey action);
+	void readFromSource(Mask_t values, Mask_t GamepadButtonMapping::*maskField);
 
 	GamepadOptions & options;
 	DpadMode activeDpadMode;
