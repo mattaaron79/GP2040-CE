@@ -145,9 +145,6 @@ void Storage::setVirtualPinMappings()
 	}
 
 	for (Pin_t vpin = 0; vpin < (Pin_t)VPIN_COUNT; vpin++) {
-		// assign the functional pin to the profile pin if:
-		// 1: there was a profile to load
-		// else use whatever is in the core mapping
 		if (alts != nullptr) {
 			virtualPinMappings[vpin] = alts[vpin];
 		} else {

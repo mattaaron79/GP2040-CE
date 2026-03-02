@@ -269,6 +269,104 @@
     #define GPIO_PIN_29 GpioAction::NONE
 #endif
 
+#ifndef VIO_PIN_00
+    #define VIO_PIN_00 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_01
+    #define VIO_PIN_01 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_02
+    #define VIO_PIN_02 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_03
+    #define VIO_PIN_03 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_04
+    #define VIO_PIN_04 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_05
+    #define VIO_PIN_05 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_06
+    #define VIO_PIN_06 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_07
+    #define VIO_PIN_07 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_08
+    #define VIO_PIN_08 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_09
+    #define VIO_PIN_09 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_10
+    #define VIO_PIN_10 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_11
+    #define VIO_PIN_11 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_12
+    #define VIO_PIN_12 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_13
+    #define VIO_PIN_13 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_14
+    #define VIO_PIN_14 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_15
+    #define VIO_PIN_15 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_16
+    #define VIO_PIN_16 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_17
+    #define VIO_PIN_17 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_18
+    #define VIO_PIN_18 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_19
+    #define VIO_PIN_19 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_20
+    #define VIO_PIN_20 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_21
+    #define VIO_PIN_21 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_22
+    #define VIO_PIN_22 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_23
+    #define VIO_PIN_23 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_24
+    #define VIO_PIN_24 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_25
+    #define VIO_PIN_25 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_26
+    #define VIO_PIN_26 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_27
+    #define VIO_PIN_27 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_28
+    #define VIO_PIN_28 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_29
+    #define VIO_PIN_29 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_30
+    #define VIO_PIN_30 GpioAction::NONE
+#endif
+#ifndef VIO_PIN_31
+    #define VIO_PIN_31 GpioAction::NONE
+#endif
+
+
 #define MAX_PROFILES (uint8_t)6
 
 #ifndef VPIN_COUNT
@@ -1234,6 +1332,15 @@ void gpioMappingsMigrationCore(Config& config)
                                            GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
                                            GpioAction::NONE, GpioAction::NONE, GpioAction::NONE};
 
+    GpioAction vpinActions[32] =        {GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE,
+                                         GpioAction::NONE, GpioAction::NONE, GpioAction::NONE, GpioAction::NONE};
+
     // flag additional pins as being used by an addon not managed here
     const auto markAddonPinIfUsed = [&](Pin_t gpPin) -> void {
         if (isValidPin(gpPin))
@@ -1256,6 +1363,11 @@ void gpioMappingsMigrationCore(Config& config)
             actions[pinAssign] = action;
         }
     };
+
+    const auto vpinFromBoardConfig = [&](Pin_t vpin, GpioAction action) -> void {
+        vpinActions[vpin] = action;
+    };
+
 
     fromProtoBuf(deprecatedPinMappings.has_pinDpadUp,    &deprecatedPinMappings.pinDpadUp,    GpioAction::BUTTON_PRESS_UP);
     fromProtoBuf(deprecatedPinMappings.has_pinDpadDown,  &deprecatedPinMappings.pinDpadDown,  GpioAction::BUTTON_PRESS_DOWN);
@@ -1412,9 +1524,25 @@ void gpioMappingsMigrationCore(Config& config)
                                                GPIO_PIN_24, GPIO_PIN_25, GPIO_PIN_26,
                                                GPIO_PIN_27, GPIO_PIN_28, GPIO_PIN_29};
 
+    GpioAction vpinConfig[32] =      {VIO_PIN_00, VIO_PIN_01, VIO_PIN_02, VIO_PIN_03,
+                                      VIO_PIN_04, VIO_PIN_05, VIO_PIN_06, VIO_PIN_07,
+                                      VIO_PIN_08, VIO_PIN_09, VIO_PIN_10, VIO_PIN_11,
+                                      VIO_PIN_12, VIO_PIN_13, VIO_PIN_14, VIO_PIN_15,
+                                      VIO_PIN_16, VIO_PIN_17, VIO_PIN_18, VIO_PIN_19,
+                                      VIO_PIN_20, VIO_PIN_21, VIO_PIN_22, VIO_PIN_23,
+                                      VIO_PIN_24, VIO_PIN_25, VIO_PIN_26, VIO_PIN_27,
+                                      VIO_PIN_28, VIO_PIN_29, VIO_PIN_30, VIO_PIN_31};
+
     // If we didn't import from protobuf, import from boardconfig
     for(unsigned int i = 0; i < NUM_BANK0_GPIOS; i++) {
         fromBoardConfig(i, boardConfig[i]);
+    }
+
+    // If vpin config is still empty, import from board config
+    for(unsigned int i = 0; i < 32; i++) {
+        if (vpinActions[i] == GpioAction::NONE) {
+            vpinFromBoardConfig(i, vpinConfig[i]);
+        }
     }
 
     // migrate I2C addons to use peripheral manager
@@ -1625,6 +1753,11 @@ void gpioMappingsMigrationCore(Config& config)
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
         config.gpioMappings.pins[pin].action = actions[pin];
     }
+
+    for (uint8_t vpin = 0; vpin < VPIN_COUNT; vpin++) {
+        config.gpioMappings.vpins[vpin].action = vpinActions[vpin];
+    }
+
     // reminder that this must be set or else nanopb won't retain anything
     config.gpioMappings.pins_count = NUM_BANK0_GPIOS;
     config.gpioMappings.vpins_count = VPIN_COUNT;

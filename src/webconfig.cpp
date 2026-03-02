@@ -274,7 +274,8 @@ int set_file_data(fs_file* file, const DataAndStatusCode& dataAndStatusCode)
     
     file->data = returnData->c_str();
     file->len = returnData->size();
-    file->index = file->len;
+    // file->index = file->len;
+    file->index = 0;
     file->http_header_included = true;
     file->pextension = returnData;  // store for cleanup
     file->is_custom_file = 1;
@@ -1191,7 +1192,7 @@ std::string setPinMappings()
 
 std::string getPinMappings()
 {
-    const size_t capacity = JSON_OBJECT_SIZE(2000); 
+    const size_t capacity = JSON_OBJECT_SIZE(2500); 
     DynamicJsonDocument doc(capacity);
 
     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
