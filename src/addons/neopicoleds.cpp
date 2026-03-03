@@ -258,8 +258,31 @@ void NeoPicoLEDAddon::setup() {
     }
 
 	// Setup our LED matrix
-    uint8_t buttonCount = setupButtonPositions();
-    vector<vector<Pixel>> pixels = createLEDLayout(static_cast<ButtonLayout>(ledOptions.ledLayout), ledOptions.ledsPerButton, buttonCount);
+    vector<vector<Pixel>> pixels;
+
+    if (ledOptions.useVpins) {
+        // Create a 1:1 mapping from your Draggable List to the LED chain
+        for (pb_size_t i = 0; i < ledOptions.vpinIndices_count; i++) {
+            // Mask: Set the bit corresponding to the GPIO pin number
+            uint32_t mask = (1 << ledOptions.vpinIndices[i]);
+            
+            // Pixel: LED Index 'i', GPIO Mask, Position (i, 0)
+            // (Setting position to i,0 makes animations like Rainbow flow in order)
+            Pixel p(i, mask, {(uint8_t)i, 0});
+            
+            // Add to matrix (AnimationStation expects rows, so we wrap in a vector)
+            pixels.push_back({p}); 
+        }
+    } else {
+        // Standard layout logic
+        uint8_t buttonCount = setupButtonPositions();
+        pixels = createLEDLayout(static_cast<ButtonLayout>(ledOptions.ledLayout), ledOptions.ledsPerButton, buttonCount);
+    }
+
+
+    // uint8_t buttonCount = setupButtonPositions();
+    // vector<vector<Pixel>> pixels = createLEDLayout(static_cast<ButtonLayout>(ledOptions.ledLayout), ledOptions.ledsPerButton, buttonCount);
+
     matrix.setup(pixels, ledOptions.ledsPerButton);
     ledCount = matrix.getLedCount();
 	buttonLedCount = ledCount; // used in linkage
@@ -546,16 +569,32 @@ void NeoPicoLEDAddon::process() {
         as.HandleEvent(action);
     }
 
-    uint32_t buttonState = gamepad->state.dpad << 16 | gamepad->state.buttons;
     vector<Pixel> pressed;
-    for (auto row : matrix.pixels)
-    {
-        for (auto pixel : row)
-        {
-            if (buttonState & pixel.mask)
-                pressed.push_back(pixel);
+    if (ledOptions.useVpins) {
+        // Use the dedicated 32-bit virtual pin state
+        uint32_t vpinState = gamepad->state.vpins; 
+
+        // We only loop through the LEDs actually configured in setup()
+        for (auto const& row : matrix.pixels) {
+            for (auto const& pixel : row) {
+                // If the bit for this pin is high in vpinState, light it up!
+                if (vpinState & pixel.mask) {
+                    pressed.push_back(pixel);
+                }
+            }
         }
+    } else {
+        uint32_t buttonState = gamepad->state.dpad << 16 | gamepad->state.buttons;
+        for (auto row : matrix.pixels)
+        {
+            for (auto pixel : row)
+            {
+                if (buttonState & pixel.mask)
+                    pressed.push_back(pixel);
+            }
+        }   
     }
+
     if (pressed.size() > 0)
         as.HandlePressed(pressed);
     else

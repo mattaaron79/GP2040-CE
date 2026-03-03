@@ -81,7 +81,6 @@
 // #define ANALOG_TRIGGER_ACTUATE ANALOG_ACTUATE_DEFAULT
 // #define ANALOG_TRIGGER_RELEASE ANALOG_ACTUATE_DEFAULT
 
-#define GPIO_PIN_05 GpioAction::BUTTON_PRESS_S2
 #define GPIO_PIN_22 GpioAction::VPIN_00
 #define GPIO_PIN_23 GpioAction::VPIN_01
 #define GPIO_PIN_24 GpioAction::VPIN_02
@@ -93,19 +92,22 @@
 #define GPIO_PIN_07 GpioAction::VPIN_08
 #define GPIO_PIN_06 GpioAction::VPIN_09
 #define GPIO_PIN_04 GpioAction::VPIN_10
+#define GPIO_PIN_05 GpioAction::VPIN_11
 // #define GPIO_PIN_05 GpioAction::VPIN_12
 
 // Virtual Pin Action Mappings
-#define GPIO_VPIN_00 GpioAction::BUTTON_PRESS_L2
-#define GPIO_VPIN_01 GpioAction::BUTTON_PRESS_UP
-#define GPIO_VPIN_02 GpioAction::BUTTON_PRESS_L2
-#define GPIO_VPIN_03 GpioAction::BUTTON_PRESS_LEFT
-#define GPIO_VPIN_04 GpioAction::BUTTON_PRESS_DOWN
-#define GPIO_VPIN_05 GpioAction::BUTTON_PRESS_RIGHT
-#define GPIO_VPIN_06 GpioAction::BUTTON_PRESS_L3
-#define GPIO_VPIN_07 GpioAction::BUTTON_PRESS_L2
-#define GPIO_VPIN_08 GpioAction::BUTTON_PRESS_S1
-#define GPIO_VPIN_09 GpioAction::BUTTON_PRESS_S2
+#define VIO_PIN_00 GpioAction::BUTTON_PRESS_L2
+#define VIO_PIN_01 GpioAction::BUTTON_PRESS_UP
+#define VIO_PIN_02 GpioAction::BUTTON_PRESS_L2
+#define VIO_PIN_03 GpioAction::BUTTON_PRESS_LEFT
+#define VIO_PIN_04 GpioAction::BUTTON_PRESS_DOWN
+#define VIO_PIN_05 GpioAction::BUTTON_PRESS_RIGHT
+#define VIO_PIN_06 GpioAction::BUTTON_PRESS_L3
+#define VIO_PIN_07 GpioAction::BUTTON_PRESS_L2
+#define VIO_PIN_08 GpioAction::BUTTON_PRESS_S1
+#define VIO_PIN_09 GpioAction::BUTTON_PRESS_S2
+#define VIO_PIN_10 GpioAction::BUTTON_PRESS_FN
+#define VIO_PIN_11 GpioAction::SUSTAIN_FOCUS_MODE
 
 // Shaberi
 #define PIN_UART1_RX 9

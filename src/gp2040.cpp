@@ -412,6 +412,9 @@ GP2040::BootAction GP2040::getBootAction() {
 				// Pre-Process add-ons for MPGS
 				addons.PreprocessAddons();
 
+				// Set gamepad state from virtual pins
+				gamepad->readVirtual();
+
 				gamepad->process(); // process through MPGS
 
 				// Process for add-ons

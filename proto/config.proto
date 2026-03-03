@@ -319,6 +319,9 @@ message LEDOptions
     optional int32 caseRGBIndex = 37;
     optional uint32 caseRGBColor = 38 [deprecated = true];
     optional uint32 caseRGBCount = 39;
+
+    optional bool useVpins = 40;
+    repeated uint32 vpinIndices = 41 [(nanopb).max_count = 32];
 };
 
 // This has to be kept in sync with AnimationOptions in animationstation.hpp
