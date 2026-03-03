@@ -42,5 +42,13 @@ export default {
 		'available-header-text': 'Available Buttons',
 		'assigned-header-text': 'Assigned Buttons',
 	},
+	'vpin-order': {
+		'header-text': 'Virtual Pin LED Button Order',
+		'sub-header-text': 'Here you can define the order of buttons for LED animations and static theme support when using virtual pins.',
+		'sub-header1-text': 'Drag and drop list items to reorder the virtual pin LED order.',
+		'available-header-text': 'Available Virtual Pins',
+		'assigned-header-text': 'Assigned Virtual Pins',
+	},
 	'turn-off-when-suspended': 'Turn Off When Suspended',
+	'use-vpins': 'Use Virtual Pins for LED Order'
 };

@@ -63,6 +63,8 @@ const defaultValue = {
 	caseRGBIndex: -1,
 	caseRGBCount: 0,
 	ledButtonMap: {},
+	useVpins: false,
+	vpinIndices: [],
 };
 
 const schema = yup.object().shape({
@@ -141,6 +143,8 @@ const schema = yup.object().shape({
 		.label('PLED Index 4')
 		.validateMinWhenEqualTo('pledType', 1, 0),
 	turnOffWhenSuspended: yup.number().label('Turn Off When Suspended'),
+	useVpins: yup.number().label('Use Virtual Pins for LED Order'),
+	vpinIndices: yup.array().of(yup.number()).label('Virtual Pin LED Order'),
 	caseRGBType: yup.number().required().label('Case RGB Type'),
 	caseRGBCount: yup
 		.number()
@@ -171,6 +175,13 @@ const createDataSource = (ledButtonMap, buttonLabelType, swapTpShareLabels) => {
 	return dataSources;
 };
 
+const createVpinDataSource = (vpinIndices) => {
+	let available = Array.from({ length: 32 }, (_, i) => ({ id: `vpin-${i}`, label: `Virtual Pin ${i}`, value: i })).filter(vpin => !vpinIndices.includes(vpin.value));
+	let assigned = vpinIndices.map(index => ({ id: `vpin-${index}`, label: `Virtual Pin ${index}`, value: index }));
+	
+	return [available, assigned];
+}
+
 const getLedButtons = (buttonLabels, map, excludeNulls, swapTpShareLabels) => {
 	const current_buttons = getButtonLabels(buttonLabels, swapTpShareLabels);
 	return orderBy(
@@ -195,8 +206,10 @@ const createLedMap = (ledButtons, clear) => {
 const FormContext = ({
 	buttonLabelType,
 	ledButtonMap,
+	vpinIndices,
 	swapTpShareLabels,
 	setDataSources,
+	setVpinDataSources,
 }) => {
 	const { setValues } = useFormikContext();
 	const { setLoading } = useContext(AppContext);
@@ -210,6 +223,8 @@ const FormContext = ({
 				swapTpShareLabels,
 			);
 			setDataSources(dataSources);
+			const vpinDataSources = createVpinDataSource(data.vpinIndices || []);
+			setVpinDataSources(vpinDataSources);
 			setValues(data);
 		}
 		fetchData();
@@ -224,6 +239,11 @@ const FormContext = ({
 		setDataSources(dataSources);
 	}, [buttonLabelType, swapTpShareLabels]);
 
+	useEffect(() => {
+		const vpinDataSources = createVpinDataSource(vpinIndices || []);
+		setVpinDataSources(vpinDataSources);
+	}, [ledButtonMap.vpinIndices]);
+
 	return null;
 };
 
@@ -231,6 +251,7 @@ export default function LEDConfigPage() {
 	const { buttonLabels, updateUsedPins } = useContext(AppContext);
 	const [saveMessage, setSaveMessage] = useState('');
 	const [dataSources, setDataSources] = useState([[], []]);
+	const [vpinDataSources, setVpinDataSources] = useState([[], []]);
 	const [colorPickerTarget, setColorPickerTarget] = useState(null);
 	const [showPicker, setShowPicker] = useState(false);
 	const [rgbLedStartIndex, setRgbLedStartIndex] = useState(0);
@@ -257,6 +278,13 @@ export default function LEDConfigPage() {
 				...createLedMap(ledOrderArrays[1], false),
 			});
 		}
+	};
+
+	const vpinOrderChanged = (setFieldValue, vpinArrays) => {
+		if (vpinArrays.length !== 2) return;
+		// Create an array of integers based on the 'assign virtual pins' array of item values
+		let newVpinIndices = vpinArrays[1].map(item => item.value);
+		setFieldValue('vpinIndices', newVpinIndices);
 	};
 
 	const ledsPerButtonChanged = (e, handleChange) => {
@@ -287,6 +315,9 @@ export default function LEDConfigPage() {
 			swapTpShareLabels,
 		);
 		setDataSources(dataSources);
+
+		const vpinDataSources = createVpinDataSource(data.vpinIndices || []);
+		setVpinDataSources(vpinDataSources);
 
 		setSaveMessage(
 			success
@@ -407,7 +438,7 @@ export default function LEDConfigPage() {
 								min={1}
 								max={10}
 							/>
-							<div className="col-sm-3">
+							<div className="col-sm-4">
 								<Form.Check
 									label={t('LedConfig:turn-off-when-suspended')}
 									type="switch"
@@ -422,8 +453,46 @@ export default function LEDConfigPage() {
 									}}
 								/>
 							</div>
+							<div className="col-sm-4">
+								<Form.Check
+									label={t('LedConfig:use-vpins')}
+									type="switch"
+									name="useVpins"
+									isInvalid={false}
+									checked={Boolean(values.useVpins)}
+									onChange={(e) => {
+										setFieldValue(
+											'useVpins',
+											e.target.checked ? 1 : 0,
+										);
+									}}
+								/>
+							</div>
 						</Row>
 					</Section>
+					{values.useVpins ? (
+					/* Virtual Pin Order */
+					<Section title={t('LedConfig:vpin-order.header-text')}>
+						<p className="card-text">
+							{t('LedConfig:vpin-order.sub-header-text')}
+						</p>
+						<p className="card-text">
+							{t('LedConfig:vpin-order.sub-header1-text')}
+						</p>
+						<DraggableListGroup
+							groupName="vpin-group"
+							titles={[
+								t('LedConfig:vpin-order.available-header-text'),
+								t('LedConfig:vpin-order.assigned-header-text'),
+							]}
+							dataSources={vpinDataSources}
+							onChange={(a) =>
+								vpinOrderChanged(setFieldValue, a)
+							}
+						/>
+					</Section>
+					) : (
+					/* RGB Order */
 					<Section title={t('LedConfig:rgb-order.header-text')}>
 						<p className="card-text">
 							{t('LedConfig:rgb-order.sub-header-text')}
@@ -443,6 +512,7 @@ export default function LEDConfigPage() {
 							}
 						/>
 					</Section>
+					)}
 					<Section title={t('LedConfig:player.header-text')}>
 						<Form.Group as={Col}>
 							<Row>
@@ -707,8 +777,10 @@ export default function LEDConfigPage() {
 						{...{
 							buttonLabelType,
 							ledButtonMap: values.ledButtonMap,
+							vpinIndices: values.vpinIndices,
 							swapTpShareLabels,
 							setDataSources,
+							setVpinDataSources,
 						}}
 					/>
 				</Form>

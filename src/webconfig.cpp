@@ -850,6 +850,18 @@ std::string setLedOptions()
     readDoc(ledOptions.caseRGBIndex, doc, "caseRGBIndex");
     readDoc(ledOptions.caseRGBCount, doc, "caseRGBCount");
 
+    readDoc(ledOptions.useVpins, doc, "useVpins");
+
+    if (doc.containsKey("vpinIndices") && doc["useVpins"].as<bool>()) {
+        int vpinCount = doc["vpinIndices"].size();
+        ledOptions.vpinIndices_count = (vpinCount > VPIN_COUNT) ? VPIN_COUNT : vpinCount;
+        for (int i = 0; i < ledOptions.vpinIndices_count; i++) {
+            ledOptions.vpinIndices[i] = doc["vpinIndices"][i];
+        }
+    } else {
+        ledOptions.vpinIndices_count = 0;
+    }
+
     EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true));
     return serialize_json(doc);
 }
@@ -878,6 +890,7 @@ std::string getLedOptions()
             writeDoc(doc, key0, key1, var);
         }
     };
+
     writeIndex("ledButtonMap", "Up", ledOptions.indexUp);
     writeIndex("ledButtonMap", "Down", ledOptions.indexDown);
     writeIndex("ledButtonMap", "Left", ledOptions.indexLeft);
@@ -910,8 +923,52 @@ std::string getLedOptions()
     writeDoc(doc, "caseRGBIndex", ledOptions.caseRGBIndex);
     writeDoc(doc, "caseRGBCount", ledOptions.caseRGBCount);
 
+    writeDoc(doc, "useVpins", ledOptions.useVpins);
+
+    doc.createNestedArray("vpinIndices");
+
+    for (int vpin = 0; vpin < ledOptions.vpinIndices_count; vpin++) {
+        writeDoc(doc, "vpinIndices", vpin, ledOptions.vpinIndices[vpin]);
+    }
+    
     return serialize_json(doc);
 }
+
+// std::string getProfileOptions()
+// {
+//     const size_t capacity = JSON_OBJECT_SIZE(1000);
+//     DynamicJsonDocument doc(capacity);
+
+//     const auto writePinDoc = [&](const int item, const char* key, const GpioMappingInfo& value) -> void
+//     {
+//         writeDoc(doc, "alternativePinMappings", item, key, "action", value.action);
+//         writeDoc(doc, "alternativePinMappings", item, key, "customButtonMask", value.customButtonMask);
+//         writeDoc(doc, "alternativePinMappings", item, key, "customDpadMask", value.customDpadMask);
+//     };
+
+//     ProfileOptions& profileOptions = Storage::getInstance().getProfileOptions();
+
+//     // return an empty list if no profiles are currently set, since we no longer populate by default
+//     if (profileOptions.gpioMappingsSets_count == 0) {
+//         doc.createNestedArray("alternativePinMappings");
+//     }
+
+//     for (int i = 0; i < profileOptions.gpioMappingsSets_count; i++) {
+//         // Use static arrays to provide stable string addresses for ArduinoJSON references and reduce stack usage?
+//         for (int pinIndex = 0; pinIndex < 30; pinIndex++) {
+//             writePinDoc(i, pinNames[pinIndex], profileOptions.gpioMappingsSets[i].pins[pinIndex]);
+//         }
+        
+//         for (int vpinIndex = 0; vpinIndex < 32; vpinIndex++) {
+//             writePinDoc(i, vpinNames[vpinIndex], profileOptions.gpioMappingsSets[i].vpins[vpinIndex]);
+//         }
+
+//         writeDoc(doc, "alternativePinMappings", i, "profileLabel", profileOptions.gpioMappingsSets[i].profileLabel);
+//         doc["alternativePinMappings"][i]["enabled"] = profileOptions.gpioMappingsSets[i].enabled;
+//     }
+
+//     return serialize_json(doc);
+// }
 
 std::string getButtonLayoutDefs()
 {
